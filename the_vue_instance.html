@@ -1,0 +1,73 @@
+<html>
+	<head>
+	<script src="vue.js"></script>
+	<script>
+	var data = { a: 1 };
+
+	var vm = new Vue({
+		data: data
+	});
+
+	console.log(vm.a == data.a);
+
+	vm.a = 2;
+	console.log(data.a);
+
+	data.a = 3;
+	console.log(vm.a);
+
+	vm.b = 'hi';
+	console.log(vm.b);
+	console.log(data.b);
+
+	vm.b = 'hello';
+	console.log(vm.b);
+	console.log(data.b);
+	
+	</script>
+	</head>
+	<body>
+		<div id="app">
+			<p>{{ foo }}</p>
+			<button v-on:click="foo = 'baz'">Change it</button>
+		</div>
+		<div id="example">
+		</div>
+		<script>
+			var obj = {
+				foo: 'bar'
+			};
+
+			Object.freeze(obj);
+
+			new Vue({
+				el: '#app',
+				data: obj,
+			});
+
+			var data = { a: 1};
+			var vm = new Vue({
+				el: '#example',
+				data: data,
+			})
+
+			console.log(vm.$data === data);
+			console.log(vm.$el == document.getElementById('example'));
+			
+			vm.$watch('a', function (newValue, oldValue) {
+				console.log('a changed to ' + vm.a);
+			});
+
+			vm.a = 'something new';
+
+			new Vue({
+				data: {
+					a: 1,
+				},
+				created: function () {
+					console.log('a is: ' + this.a);
+				},
+			});
+		</script>
+	</body>
+</html>

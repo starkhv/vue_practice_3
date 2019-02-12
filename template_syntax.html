@@ -1,0 +1,51 @@
+<html>
+	<head>
+		<script src="vue.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<p>Message: {{ msg }}</p>
+			<p v-once>This will never change: {{ msg }}</p>
+			<button v-on:click="msg='That some message is now changed'">Change message</button>
+			<div> {{ someRawHTML }}</div>
+			<div><span v-html='someRawHTML'></span></div>
+			<div v-bind:id='dynamicId'>Dynamic ID</div>
+			<button v-bind:disabled='isButtonDisabled'>Disabled Button</button>
+			<div> {{ number + 1 }} </div>
+			<div> {{ ok ? 'YES' : 'NO' }} </div>
+			<div> {{ message.split('').reverse().join('') }}</div>
+			<div v-bind:id='"list-" + id'></div>
+			<p v-if='seen'> Now you see me </p>
+			<a v-bind:href="linkURL">{{ linkText }}</a>
+			<a v-on:click="doSomething" href='#'> Do Something </a>
+			<a v-bind:[dynamic]='linkURL'>Something</a>
+			<a v-on:[eventName]='clickeventmessage = "Clicked"'>{{clickeventmessage}}</a>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					msg: 'This is some message',
+					someRawHTML: '<h1> Some Raw HTML {{msg}} </h1>',
+					dynamicId: '#someDynamicId',
+					isButtonDisabled: false,
+					number: 2,
+					ok: false,
+					message: 'egasseM emoS',
+					id: 'someId',
+					seen: false,
+					linkURL: 'http://www.some.link',
+					linkText: 'Some link',
+					dynamic: 'href',
+					eventname: 'click',
+					clickeventmessage: 'Click me',
+				},
+				methods: {
+					doSomething : function(){
+						this.linkText = 'Link text changed';
+					},
+				},
+			});
+		</script>
+	</body>
+</html>

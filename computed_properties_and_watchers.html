@@ -11,20 +11,56 @@
 			<div id="example2">
 				Original Message: {{ message }}
 				Reversed Message: {{ reversedMessage }}
+				Reversed Message: {{ reversedMessageMethod() }}
 			</div>
 			<div>
 				<input v-model="message" type="text"/>
 			</div>
+			<div>
+				<label for='first_name'>First Name</label>
+				<input name='first_name' v-model='firstName' />
+				<label for='last_name'>Last Name</label>
+				<input name='last_name' v-model='lastName' />
+				<p> Full Name : {{ fullName }} </p>
+				<p> Full Name watched: {{ fullNameWatched }} </p>
+				<label for='full_name' />
+				<input name='full_name' v-model='fullName' />
 		</div>
 		<script>
 			var app = new Vue({
 				el: '#app',
 				data: {
 					message: 'This is some message',
+					firstName: 'Google',
+					lastName: 'Chrome',
+					fullNameWatched: 'Google Chrome',
 				},
 				computed: {
 					reversedMessage: function () {
 						return this.message.split('').reverse().join('');
+					},
+					fullName: {
+						get: function () {
+							return this.firstName + ' ' + this.lastName;
+						},
+						set: function (newValue) {
+							var names = newValue.split(' ');
+							this.firstName = names[0];
+							this.lastName = names[names.length - 1];
+						},
+					},
+				},
+				methods: {
+					reversedMessageMethod: function () {
+						return this.message.split('').reverse().join('');
+					}
+				},
+				watch: {
+					firstName: function (val) {
+						this.fullNameWatched = val + ' ' + this.lastName; 
+					},
+					lastName: function (val) {
+						this.fullNameWatched = this.firstName + ' ' + val; 
 					},
 				},
 			});

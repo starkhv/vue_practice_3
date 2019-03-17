@@ -1,0 +1,70 @@
+<html>
+	<head>
+		<script src='vue.js'></script>
+		<style>
+			.active{
+				background-color: blue;
+				color: white;
+			}
+			.static{
+				border: 1px solid black;
+			}
+		</style>
+	</head>
+	<body>
+		<div id='app'>
+			<div v-bind:class='{active: isActive}' class="static">This div shows if 'isActive' is true or not. It's background is blue if true.</div>
+			<div v-bind:class='divClassObject' class="static">This div also shows if 'isActive' is true or not. It's background is blue if false.</div>
+			<button v-on:click='toggleActive()'>Toggle active</button>
+			<div v-bind:class='divClassObjectFromData' class="static">This div is to check if objects from vue data properties can be modified</div>
+			<div v-bind:class='divClassArray'>This div is apply a classes from a dynamic array.</div>
+			<div v-bind:class='[isActive? "active" : ""]'>This div is apply a classes from a dynamic inline array.</div>
+			<div v-bind:class='[{active : isActive}, "someOtherClass"]'>This div is apply a classes from a object in an inline array.</div>
+			<div v-bind:style='{ color: activeColor, fontSize: fontSize}'>This div is for testing binding inline styles </div>
+			<div v-bind:style='styleObject'>This div is for testing binding styles using a style object </div>
+			<div v-bind:style='[baseStyles, overridingStyles]'>This div is for testing binding styles using a array of style objects along with overriding common style properties </div>
+			<div v-bind:style='{ display: ["-webkit-box", "-ms-flexbox", "flex"]}'>This div is for testing binding style property using multiple values</div>
+		</div>
+	<script>
+		var app = new Vue({
+			el: '#app',
+			data: {
+				isActive: false,
+				divClassObjectFromData: {
+					fromdata: this.isActive, 
+				},
+				activeColor: 'red',
+				fontSize: 30,
+				styleObject: {
+					color: 'red',
+					fontSize: 30,
+				},
+				baseStyles: {
+					color: 'black',
+					fontSize: 10,
+				},
+				overridingStyles: {
+					color: 'red',
+					fontSize: 20,
+				},
+			},
+			computed: {
+				divClassObject: function() {
+					return {
+						active: !this.isActive,
+					};
+				},
+				divClassArray: function() {
+					return [
+						this.isActive? 'active' : '', 'someOtherClass'];
+				},
+			},
+			methods: {
+				toggleActive : function() {
+					this.isActive = !this.isActive;
+				},
+			},
+		});
+	</script>
+	</body>
+</html>

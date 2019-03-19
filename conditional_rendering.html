@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<script src='vue.js'></script>
+	</head>
+	<body>
+		<div id="app">
+			<h1 v-if="awesome"> Vue is awesome! </h1>
+			<h1 v-else> Oh no! :-P </h1>
+			<template v-if="ok">
+				<h1>OK</h1>
+			</template>
+			<template v-else-if="notOk">
+				<h1> Not OK </h1>
+			</template>
+			<template v-else>
+				<h1> No </h1>
+			</template>
+			<template v-if='loginType === "username"'>
+				<label>Username</label>
+				<input placeholder="Enter your username">
+			</template>
+			<template v-else>
+				<label>Email</label>
+				<input placeholder="Enter your email address">
+			</template>
+			<button @click="toggleLoginType">Toggle login type when not using key</button>
+			<template v-if='loginType === "username"'>
+				<label>Username</label>
+				<input placeholder="Enter your username" key='username-input'>
+			</template>
+			<template v-else>
+				<label>Email</label>
+				<input placeholder="Enter your email address" key="email-input">
+			</template>
+			<button @click="toggleLoginType">Toggle login type when using key</button>
+			<h1 v-show="ok">OK! Hello!</h1>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					awesome: true,
+					ok: false,
+					notOk: false,
+					no: true,
+					loginType: "username",
+				},
+				methods: {
+					toggleLoginType: function () {
+						if(this.loginType === "username"){
+							this.loginType = "email";
+						}
+						else{
+							this.loginType = "username";
+						}
+					},
+				},
+			});
+		</script>
+	</body>
+</html>

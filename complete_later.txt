@@ -1,0 +1,2 @@
+After components basics, go back to "Binding HTML Classes With Components"  in Class and Style Bindings
+After components basics, go back to section "v-for with components" in List Rendering

@@ -1,0 +1,197 @@
+<html>
+	<head>
+		<title> List Rendering </title>
+		<script src='vue.js'></script>
+	</head>
+	<body>
+		<div id='app'>
+			<div>
+				<p> v-for with a v-if </p>
+				<p> Render only for some items </p>
+				<ul>
+					<li v-for='todo in todos' v-if='!todo.isComplete'>{{ todo.description }}</li>
+				</ul>
+				<p> Skip execution of v-for loop based on v-if conditionally </p>
+				<ul v-if="todos.length>=6">
+					<li v-for='todo in todos'>{{ todo.description }}</li>
+				</ul>
+				<p v-else>Less than 6 todos left!</p>
+			</div>
+			<div>
+				<p> v-for on a template tag </p>
+				<ul>
+				<template v-for="item in items">
+					<li>{{ item.message }}</li>
+				</template>
+				</ul>
+			</div>
+			<div>
+				<p> v-for with range </p>
+				<span v-for="n in 10">{{ n }} </span>
+			</div>
+			<div>
+				<p> List filtering </p>
+				<p> With computed data </p>
+				<ul>
+					<li v-for='n in evenNumbers'>{{ n }}</li>
+				</ul>
+				<p> With method</p>
+				<ul>
+					<li v-for='n in even(numbers)'>{{ n }}</li>
+				</ul>
+			</div>
+			<div>
+				<ul v-for='value, key in existingObject2'>
+					<li>{{ key }} : {{ value }}</li>
+				</ul>
+				<button @click="assignProperties">What doesn't work</button>
+				<button @click="replaceObject">What works</button>
+				<p><strong>Caveat 2</strong></p>
+				<p v-if='existingObject.newProperty1'> {{ existingObject.newProperty1 }}</p>
+				<button @click='addToNewProperty1'>Add 1 to existingObject.newProperty1 using javascript syntax</button>
+				<p v-if='existingObject.newProperty2'> {{ existingObject.newProperty2 }}</p>
+				<button @click='addToNewProperty2'>Add 1 to existingObject.newProperty2 using Vue syntax</button>
+				<p><strong>Assign more than one property to an existing object</strong></p>
+				<p><strong>Object change detection caveats</strong></p>
+				<p><strong>Caveat 1</strong></p>
+				<p> a: {{ a }}</p>
+				<p v-if='bAdded'> b: {{ b }}</p>
+				<button @click='addB'>Add B</button>
+				<button @click='a=a+1'>Add 1 to A</button>
+				<button @click='b=b+1'>Add 1 to B</button>
+			</div>
+			<div>
+				<p> Demo of Vue not reacting when setting a value at an array index using the plain javascript syntax </p>
+				<ul v-for='value in setArrayExample'>
+					<li>{{ value }}</li>
+				</ul>
+				<p> Array Length : {{ setArrayExample.length }} </p>
+				<button @click='changeArrayJSSyntax()'>Change array using JS syntax</button>
+				<button @click='changeArrayVueSyntax()'>Change array using Vue syntax</button>
+			</div>
+			<ul v-for='item of items' :key='item.id'>
+				<li> {{ item.message }} </li>
+			</ul>
+			<ul v-for='item in items'>
+				<li> {{ item.message }} </li>
+			</ul>
+			<ul v-for='(value, key, index) in vForObject'>
+				{{ index }} : {{ key }}: {{ value }}
+			</ul>
+			<ul v-for='value in vForObject'>
+				{{ value }}
+			</ul>
+			<ul v-for='item of items'>
+				<li> {{ item.message }} </li>
+			</ul>
+			<ul v-for='(item, index) in items'>
+				<li> {{parentMessage}} - {{ index }} - {{ item.message }} </li>
+			</ul>
+		</div>
+	<script>
+		function isEven(number){
+			return number % 2 === 0;
+		};
+		var app = new Vue({
+			el: '#app',
+			data: {
+				todos: [
+					{
+						isComplete: true,
+						description: 'Task 1',
+					},
+					{
+						isComplete: false,
+						description: 'Task 2',
+					},
+					{
+						isComplete: true,
+						description: 'Task 3',
+					},
+					{
+						isComplete: false,
+						description: 'Task 4',
+					},
+					{
+						isComplete: true,
+						description: 'Task 5',
+					},
+				],
+				numbers : [1,2,3,4, 5],
+				existingObject2: {
+					someProp1: 'Hello!',
+					someProp2: 'World!',
+				},
+				existingObject: {
+				},
+				bAdded: false,
+				a: 1,
+				setArrayExample: ['a', 'f', 'c', 'd', 'e'],
+				vForObject: {
+					firstName: 'Google',
+					lastName: 'Chrome',
+					age: 30,
+				},
+				items: [ 
+					{ message : 'hello' },
+					{ message : 'world' },
+					{ message : "i'm" },
+					{ message : 'an' },
+					{ message : 'array' },
+					],
+				parentMessage: 'Content of the parent message',
+			},
+		computed: {
+			evenNumbers: function(){
+				return this.numbers.filter(isEven);
+			},
+		},
+		methods: {
+			even: function(numbers){
+				return numbers.filter(isEven);
+			},
+			replaceObject: function(){
+				this.existingObject2 = Object.assign({}, this.existingObject2, {
+					firstName: 'Google',
+					lastName: 'Chrome',
+				});
+			},
+			assignProperties: function(){
+				Object.assign(this.existingObject2, {
+					firstName: 'Google',
+					lastName: 'Chrome',
+				});
+			},
+			addToNewProperty2: function(){
+				if(this.existingObject.newProperty2){
+					app.$set(this.existingObject, 'newProperty2',  this.existingObject.newProperty2+1);
+				}
+				else{
+					Vue.set(this.existingObject, 'newProperty2',  1);
+				}
+			},
+			addToNewProperty1: function(){
+				if(this.existingObject.newProperty1){
+					this.existingObject.newProperty1 += 1;
+				}
+				else{
+					this.existingObject.newProperty1 = 1;
+				}
+			},
+			addB: function(){
+				this.b = 2;
+				this.bAdded = true;
+			},
+			changeArrayVueSyntax : function(){
+				Vue.set(this.setArrayExample, 1, 'b');
+				this.setArrayExample.splice(10);
+			},
+			changeArrayJSSyntax : function(){
+				this.setArrayExample[1] = 'b';
+				this.setArrayExample.length = 10;
+			},
+		},
+		});
+	</script>
+	</body>
+</html>

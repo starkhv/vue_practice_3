@@ -1,0 +1,157 @@
+<html>
+	<head>
+		<script src='vue.js'></script>
+	</head>
+	<body>
+		<div id='app'>
+			<p>Modifiers</p>
+			<label>No modifier</label><input v-model='withoutTrim'>
+			<label>Trim modifier</label><input v-model.trim='withTrim'>
+			<p> Whitespace : {{ withoutTrim }} Trailing text for comparison</p>
+			<p> Without it : {{ withTrim }} Trailing text for comparison</p>
+			<label>No modifier</label><input v-model='numberModifierOriginal' type='number'>
+			<p> Without number modifier: {{ numberModifierOriginal }} </p>
+			<label>Number modifier</label><input v-model.number='numberModifier' type='number'>
+			<p> With number modifier: {{ numberModifier }} </p>
+			<label>No modifier</label><input v-model='msg'>
+			<label>Lazy modifier</label><input v-model.lazy='msg'>
+			<p> Message: {{ msg }} </p>
+			<p>Value Bindings</p>
+			<p>Basic Usage</p>
+			<select v-model='selectedBasic'>
+				<option disabled value=''>Please select one</option>
+				<option>A</option>
+				<option>B</option>
+				<option>C</option>
+			</select>
+			<select v-model='selectedValueBinding'>
+				<option disabled value=''>Please select one</option>
+				<option :value='{ number: 123 }'>123</option>
+				<option>B</option>
+				<option>C</option>
+			</select>
+			<span>SelectedBasic: {{ selectedBasic }}</span>
+			<span>SelectedValueBinding: {{ selectedValueBinding }}</span>
+			<p>Value Binding</p>
+			<p>Basic Usage</p>
+			<input type='radio' v-model='pick' value='a'>
+			<p>Value Binding</p>
+			<input type='radio' v-model='pick' :value='a'>
+			<p>Basic Usage</p>
+			<input type='checkbox' v-model='toggle'>
+			<p>Value Binding</p>
+			<input type='checkbox' v-model='toggle' true-value='a' false-value='b'>
+			<p>Toggle: {{ toggle }} <button @click='doToggle'>Toggle</button></p>
+			<p>Dynamic options with v-for</p>
+			<select v-model='selectedDynamic'>
+				<option v-for='option in options' :value='option.value'>
+				{{ option.text }}
+				</option>
+			</select>
+			<span>Selected: {{ selectedDynamic }}</span>
+			<p>Multiple select</p>
+			<select v-model='selectedMultiple' multiple>
+				<option disabled value=''>Please select one or multiple</option>
+				<option>A</option>
+				<option>B</option>
+				<option>C</option>
+			</select>
+			<br/>
+			<span>Selected: {{ selectedMultiple }}</span>
+			<p>Single select</p>
+			<select v-model='selected'>
+				<option disabled value=''>Please select one</option>
+				<option>A</option>
+				<option>B</option>
+				<option>C</option>
+			</select>
+			<span>Selected: {{ selected }}</span>
+			<p>Radio</p>
+			<input type='radio' id='one' value='One' v-model='picked'/>
+			<label for='one'>One</label>
+			<br>
+			<input type='radio' id='two' value='Two' v-model='picked'/>
+			<label for='two'>Two</label>
+			<br>
+			<span>Picked: {{ picked }}</span>
+			<br>
+			<br>
+			<p>Multiple Checkboxes bound to Array</p>
+			<input type='checkbox' id='jack' value='Jack' v-model='checkedNames'/>
+			<label for='jack'>Jack</label>
+			<input type='checkbox' id='john' value='John' v-model='checkedNames'/>
+			<label for='john'>John</label>
+			<input type='checkbox' id='mike' value='Mike' v-model='checkedNames'/>
+			<label for='mike'>Mike</label>
+			<br>
+			<span>Checked names: {{ checkedNames }}</span>
+			<br>
+			<br>
+			<input type='checkbox' id='checkbox' v-model='checked'/>
+			<label for='checkbox'>{{ checked }}</label>
+			<p>Single Checkbox</p>
+			<input type='checkbox' id='checkbox' v-model='checked'/>
+			<label for='checkbox'>{{ checked }}</label>
+			<p>Multiple Checkboxes</p>
+			<textarea v-model='multiLineMessage'></textarea>
+			<p>Multi-line message is: {{ multiLineMessage }}</p>
+			<p> Interpolation on textarea doesn't work. Verify by changing multiLineMessage. </p>
+			<input v-model='message' />
+			<p>Message is: {{ message }}</p>
+			<br/>
+			<input value='some predefined value' v-model='sourceOfTruth' />
+			<textarea placeholder='This textarea has multiLineMessage as interpolated value inside tag content'>{{ multiLineMessage }}</textarea>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					sourceOfTruth: 'Vue ignores the input value or in other tags checked and selected',
+					message: 'This is some message',
+					multiLineMessage: `Lorem ipsum
+					And then some other text in another line`,
+					checked: false,
+					checkedNames: [],
+					picked: [],
+					selected: '',
+					selectedMultiple: [],
+					selectedDynamic: '',
+					options: [
+						{
+							text: 'One',
+							value: 'A',
+						},
+						{
+							text: 'Two',
+							value: 'B',
+						},
+						{
+							text: 'Three',
+							value: 'C',
+						},
+					],
+					toggle: 'a',
+					pick: '',
+					a: 'some value',
+					selectedBasic: '',
+					selectedValueBinding: '',
+					msg: '',
+					numberModifierOriginal: '',
+					numberModifier: '',
+					withoutTrim: '',
+					withTrim: '',
+				},
+				methods: {
+					doToggle: function (){
+						if(this.toggle==='a'){
+							this.toggle = 'b';
+						}
+						else if(this.toggle==='b'){
+							this.toggle = 'a';
+						}
+					},
+				},
+			});
+		</script>
+	</body>
+</html>

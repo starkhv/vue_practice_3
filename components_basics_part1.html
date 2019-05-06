@@ -1,0 +1,65 @@
+<html>
+	<head>
+		<script src='vue.js'></script>
+	</head>
+	<body>
+		<div id='app'>
+			<blog-post
+				v-for='post in posts'
+				:key='post.id'
+				:post='post'
+				:post-font-size='postsFontSize'
+			></blog-post>
+			<button>Change font size</button>
+			<!--
+			<blog-post title='My journey with Vue'></blog-post>
+			<blog-post title='Another blog post'></blog-post>
+			-->
+			<button-counter></button-counter>
+			<button-counter></button-counter>
+			<button-counter></button-counter>
+		</div>
+		<script>
+			Vue.component('blog-post', {
+				props: ['post', 'postFontSize'],
+				template: `
+				<div class='blog-post' :style='{ fontSize: postFontSize + "em" }'>
+				 <h3>{{ post.title }}</h3>
+				 <div v-html='post.content'></div>
+				<button @click='postFontSize+=1'>Enlarge text</button>
+				</div>`,
+			});
+			Vue.component('button-counter', {
+				data: function () {
+					return {
+						count: 0,
+					}
+				},
+				template: '<button @click="count++">You clicked me {{ count }} times.</button>',
+			});
+			var app = new Vue({
+				el: '#app',
+				data: {
+					postsFontSize: 1,
+					posts: [
+						{
+							id: 1,
+							title: 'Title of the first post',
+							content: 'Content of the first post',
+						},
+						{
+							id: 2,
+							title: 'This is the title of the second post',
+							content: 'Content of the second post',
+						},
+						{
+							id: 3,
+							title: 'I am the title of the third post',
+							content: 'Content of the third post',
+						},
+					],
+				},
+			});
+		</script>
+	</body>
+</html>

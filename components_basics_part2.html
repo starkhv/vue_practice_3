@@ -1,0 +1,87 @@
+<html>
+	<head>
+	<script src='vue.js'></script>
+	</head>
+	<body>
+		<div id='app'>
+			<ul>
+				<tr is='blog-post-row'>Hello</tr>
+			</ul>
+			<ul>
+				<blog-post-row>Hello</blog-post-row>
+			</ul>
+			<component :is='currentTabComponent'></component>
+			<button @click='currentTabComponent="alert-box"'>Switch to Alert Box</button>
+			<button @click='currentTabComponent="custom-input"'>Switch to Custom Input</button>
+			<alert-box>Some alert text</alert-box>
+			<custom-input v-model='inputModel'></custom-input>
+			<input v-model='inputModel'/>
+			<blog-post v-for='post in posts' :key='post.id' :post='post' :post-font-size='postsFontSize' @enlarge-text='postsFontSize+=0.1' @shrink-text-with-value='postsFontSize-=$event' @enlarge-text-method-event='enlargeTextMethod'></blog-post>
+		</div>
+		<script>
+			Vue.component('blog-post-row', {
+				template: `
+					<div>
+					<slot></slot>
+					</div>
+				`,
+			});
+			Vue.component('alert-box', {
+				template: `
+				<div style='background-color: #f3beb8'>
+				<strong>Error!</strong>
+				<slot></slot>
+				</div>
+				`,
+			});
+			Vue.component('custom-input', {
+				props: ['value'],
+				template: `
+				<div>
+				<label for='my_input'>Custom Input</label>
+				<input name='my_input' :value='value' @input='$emit("input", $event.target.value)'/>
+				</div>
+				`,
+			});
+			Vue.component('blog-post', {
+				props: ['post', 'postFontSize'],
+				template: `
+				<div :style='{fontSize: postFontSize + "em"}'>
+				<h3>{{ post.title }}</h3>
+				<p>{{ post.content }}</p>
+				<button @click='$emit("enlarge-text")'>Enlarge Text</button>
+				<button @click='$emit("shrink-text-with-value", 0.1)'>Shrink Text with value</button>
+				<button @click='$emit("enlarge-text-method-event", 1)'>Enlarge text method with value</button>
+				</div>
+				`,
+			});
+			var app = new Vue({
+				el: '#app',
+				data: {
+					currentTabComponent: 'alert-box',
+					inputModel: 'Custom input text',
+					postsFontSize: 1,
+					posts: [
+						{
+							'title': 'Title of the first post',
+							'content': 'Content of the first post',
+						},
+						{
+							'title': 'Title of the second post',
+							'content': 'Content of the second post',
+						},
+						{
+							'title': 'Title of the third post',
+							'content': 'Content of the third post',
+						},
+					],
+				},
+				methods: {
+					enlargeTextMethod: function(enlargeAmount){
+						this.postsFontSize += enlargeAmount;
+					},
+				},
+			});
+		</script>
+	</body>
+</html>

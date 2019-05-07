@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<script src='vue.js'></script>
+	</head>
+	<body>
+		<div id='app'>
+			<p>Locally registered components</p>
+			<component-a></component-a>
+			<component-b></component-b>
+			<my-component-name></my-component-name>
+			<some-component-name></some-component-name>
+		</div>
+		<script>
+			var ComponentA = {
+				template: '<div>Component A</div>',
+			}
+			var ComponentB = {
+				template: '<div>Component B</div>',
+			}
+			var ComponentC = {
+				template: '<div>Component C</div>',
+			}
+			Vue.component('my-component-name', {
+				template: '<div>My component name</div>',
+			});
+			Vue.component('SomeComponentName', {
+				template: '<div>Some component name</div>',
+			});
+			var app = new Vue({
+				el: '#app',
+				components: {
+					'component-a': ComponentA,
+					'component-b': ComponentB,
+				},
+			});
+		</script>
+	</body>
+</html>

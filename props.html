@@ -1,0 +1,51 @@
+<html>
+	<head>
+		<script src='vue.js'></script>
+	</head>
+	<body>
+		<div id='app'>
+
+		<blog-post-with-prop-types v-bind='post'></blog-post-with-prop-types>
+		<blog-post-with-prop-types :author-object='{ name: "Dunphy" }'></blog-post-with-prop-types>
+		<blog-post-with-prop-types :comment-ids='[12, 34, 56]'></blog-post-with-prop-types>
+		<blog-post-with-prop-types :is-published='false'></blog-post-with-prop-types>
+		<blog-post-with-prop-types is-published></blog-post-with-prop-types>
+		<blog-post-with-prop-types :likes='100'></blog-post-with-prop-types>
+		<blog-post-with-prop-types title='hello!'></blog-post-with-prop-types>
+		<blog-post post-title='hello!'></blog-post>
+		</div>
+		<script>
+			Vue.component('blog-post-with-prop-types', {
+				props: {
+					title: String,
+					likes: Number,
+					isPublished: Boolean,
+					commentIds: Array,
+					authorObject: Object,
+				},
+				template: `
+				<div class='blog-post-with-prop-types'>
+				<h3>{{ title }}</h3>
+				<span>{{ likes }} Likes </span>
+				<p v-if='isPublished'>Published</p>
+				<p>Comment Ids: <span v-for='commentId in commentIds'>{{commentId}} </span></p>
+				<p v-if='authorObject'>Author: {{ authorObject.name }}</p>
+				</div>
+				`,
+			});
+			Vue.component('blog-post', {
+				props: ['postTitle'],
+				template: '<h3>{{ postTitle }}</h3>',
+			});
+			var app = new Vue({
+				el: '#app',
+				data: {
+					post: {
+						title: 'Hello world',
+						likes: '10',
+					},
+				},
+			});
+		</script>
+	</body>
+</html>

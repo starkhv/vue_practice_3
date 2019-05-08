@@ -4,7 +4,22 @@
 	</head>
 	<body>
 		<div id='app'>
-
+		<h3>Deciding attribute inheritance</h3>
+		<base-input custom-attribute='value'></base-input>
+		<h3>Attribute merging</h3>
+		<bootstrap-date-input data-date-picker='activated' class='date-picker-theme-dark'></bootstrap-date-input>
+		<h3>Prop validation</h3>
+		<component-with-person :author='{}'></component-with-person>
+		<my-component :person='person'></my-component> 
+		<my-component prop-a='hello'></my-component> 
+		<my-component :prop-b='false'></my-component> 
+		<my-component prop-f='other'></my-component> 
+		<h3>One way data flow</h3>
+		<p>Parent Property Array: {{ parentPropArray }}</p>
+		<p>Parent Property: {{ parentProp }}</p>
+		<button @click='parentPropArray.push(4)'>Append 4 to parentPropArray</button>
+		<button @click='parentProp+=1'>Increase parentProp by 1</button>
+		<child-component :child-prop='parentProp' :child-prop-array='parentPropArray'></child-component>
 		<blog-post-with-prop-types v-bind='post'></blog-post-with-prop-types>
 		<blog-post-with-prop-types :author-object='{ name: "Dunphy" }'></blog-post-with-prop-types>
 		<blog-post-with-prop-types :comment-ids='[12, 34, 56]'></blog-post-with-prop-types>
@@ -15,6 +30,77 @@
 		<blog-post post-title='hello!'></blog-post>
 		</div>
 		<script>
+			Vue.component('base-input', {
+				inheritAttrs: false,
+				template: `
+				<label> I am a label for
+				<input v-bind='$attrs'/>
+				</label>
+				`
+			});
+			Vue.component('bootstrap-date-input', {
+				template: '<input class="form-control"/>',
+			});
+			function Person(firstName, lastName) {
+				this.firstName = firstName;
+				this.lastName = lastName;
+			}
+			Vue.component('component-with-person', {
+				props: {
+					author: Person,
+				},
+				template: '<div></div>',
+			})
+			Vue.component('my-component', {
+				props: {
+					propA: Number,
+					propB: [String, Number],
+					propC: {
+						type: String,
+						required: true
+					},
+					propD: {
+						type: Number,
+						default: 100,
+					},
+					propE: {
+						type: Object,
+						default: function(){
+							return {
+								message: 'Hello',
+							};
+						},
+					},
+					propF: {
+						validator: function (value) {
+							return ['success', 'warning', 'danger'].indexOf(value) !== -1
+						}
+					},
+				},
+				template: `<div>
+				<p>Prop D: {{ propD }}</p>
+				<p>Prop E: {{ propE }}</p>
+				</div>`,
+			});
+			Vue.component('child-component', {
+				props: ['childProp', 'childPropArray'],
+				template: `<div>
+				<p> Child Property Array: {{ childPropArray }} </p>
+				<p> Local Child Property Array: {{ localChildPropArray }} </p>
+				<p> Child Property: {{ childProp }} </p>
+				<p> Local Child Property: {{ localChildProp }} </p>
+				<button @click='childPropArray.push(4)'>Append 4 to childPropArray</button>
+				<button @click='localChildPropArray.push(4)'>Append 4 to localChildPropArray</button>
+				<button @click="childProp+=1">Increase childProp by 1</button>
+				<button @click="localChildProp+=1">Increase localChildProp by 1</button>
+				</div>`,
+				data: function(){
+					return {
+						localChildProp: this.childProp,
+						localChildPropArray: this.childPropArray,
+					};
+				},
+			});
 			Vue.component('blog-post-with-prop-types', {
 				props: {
 					title: String,
@@ -42,8 +128,11 @@
 				data: {
 					post: {
 						title: 'Hello world',
-						likes: '10',
+						likes: 10,
 					},
+					parentProp: 1,
+					parentPropArray: [1, 2, 3],
+					person: new Person('Google', 'Chrome'),
 				},
 			});
 		</script>

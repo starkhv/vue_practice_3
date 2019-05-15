@@ -1,0 +1,122 @@
+<html>
+	<head>
+		<script src='vue.js'></script>
+	</head>
+	<body>
+		<div id='app'>
+			<p>Sync modifier</p>
+			<p>{{ propertyObject.title }}</p>
+			<p> Passing property object </p>
+			<title-form v-bind.sync='propertyObject'></title-form>
+			<p>{{ paragraphTitle }}</p>
+			<p> Passing single property </p>
+			<title-form :title.sync='paragraphTitle'></title-form>
+			<base-input v-on:focus='onFocus' @input='onInput'></base-input>
+			<h3> Customizing Component v-model </h3>
+			<base-checkbox :checked='checked'></base-checkbox>
+			<button @click='toggleChecked'>Toggle checked</button>
+			<h3> Event names case insenstivity </h3>
+			<my-component></my-component>
+		</div>
+		<script>
+		Vue.component('titleForm', {
+			props: {
+				title: String,
+			},
+			data: function() {
+				return {
+					newTitle: this.title,
+				};
+			},
+			template: `
+			<div>
+			<label>
+			<input v-model='newTitle'/>
+			</label>
+			<button @click='updateTitle'>Update Title</button>
+			</div>
+			`,
+			methods: {
+				updateTitle: function(){
+					this.$emit('update:title', this.newTitle);
+				},
+			},
+		});
+		Vue.component('base-input', {
+			computed: {
+				inputListeners: function () {
+					var vm = this;
+					return Object.assign({},
+						this.$listeners,
+						{
+							input: function (event){
+								vm.$emit('input', event.target.value);
+							},
+						},
+					);
+				},
+			},
+			template: `
+			<label>Some label
+			<input v-on='$listeners' />
+			</label>
+			`,
+			});
+		Vue.component('base-checkbox', {
+			model: {
+				prop: 'checked',
+				event: 'change'
+			},
+			props: {
+				checked: Boolean,
+			},
+			template: `
+			<input
+				type='checkbox'
+				v-bind:checked='checked'
+				v-on:change='$emit("change", $event.target.checked)'
+			>
+			`,
+		});
+		childComponent = {
+			template: `<button @click='$emit("my-event")'>Click me to send myEvent event</button>`,
+		};
+		Vue.component('my-component', {
+			components: {
+				childComponent,
+			},
+			template: `
+				<div>
+				<child-component @my-event='sayMyEventReceived'></child-component>
+				</div>
+				`,
+			methods: {
+				sayMyEventReceived: function(){
+					alert('myEvent event received');
+				},
+			},
+		});
+		var app = new Vue({
+			el: '#app',
+			data: {
+				checked: false,
+				paragraphTitle: 'Some title for paragraph',
+				propertyObject: {
+						title: 'Some other title for paragraph',
+				},
+			},
+			methods: {
+				onFocus: function() {
+					console.log('focused');
+				},
+				toggleChecked: function() {
+					this.checked = !this.checked;
+				},
+				onInput: function(event) {
+					console.log(event.target.value);
+				},
+			}
+		});
+		</script>
+	</body>
+</html>

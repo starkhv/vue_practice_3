@@ -1,0 +1,219 @@
+<html>
+	<head>
+		<script src='vue.js'></script>
+	</head>
+	<body>
+		<div id='app'>
+			<p>Other examples</p>
+			<todo-list-slotted :todos='todos'>
+				<template v-slot:todo='{ todo }'>
+					<span v-if='todo.isComplete'>✓</span>
+					{{ todo.text }}
+				</template>
+			</todo-list-slotted>
+			<todo-list-simple :todos='todos'></todo-list-simple>
+			<p>Named slots shorthand</p>
+			<current-user #default='{ user }' :user='userObj'>
+				{{ user.firstName }}
+			</current-user>
+			<current-user #='{ user }' :user='userObj'>
+				{{ user.firstName }}
+			</current-user>
+			<named-slots>
+				<template #header>
+					<h1>I am the header</h1>
+				</template>
+				<p>A paragraph for the default content.</p>
+				<template #footer>
+					<p>I am the footer</p>
+				</template>
+			</named-slots>
+			<p>Dynamic Slot Names</p>
+			<base-layout @change-slot-name='changeSlotName'>
+				<template v-slot:[dynamicSlotName]>
+					Some new text
+				</template>
+			</base-layout>
+			<p>Destructuring slot props</p>
+			<p>Fallback when a slot property is undefined(Does not work as documented for some reason)</p>
+			<current-user2 v-slot="{ user = { firstName: 'Jackie', lastName: 'Chan' } }">
+				{{ user.firstName }}
+			</current-user2>
+			<p>Rename user to person</p>
+			<current-user v-slot='{ user: person }' :user='userObj'>
+				{{ person.firstName }}
+			</current-user>
+			<p>Pull out specific props</p>
+			<current-user v-slot='{ user }' :user='userObj'>
+				{{ user.firstName }}
+			</current-user>
+			<p>For multiple slots use full template based syntax for all slots</p>
+			<p>This works without warning</p>
+			<current-user :user='userObj'>
+				<template v-slot:default='slotProps'>
+				 Default Slot Props: {{ slotProps.user.firstName }}
+				 </template>
+				<template v-slot:other='otherSlotProps'>
+					Other Slot Props: {{ otherSlotProps.user.firstName }}
+				</template>
+			</current-user>
+			<p>This generates a warning</p>
+			<current-user :user='userObj' v-slot:default='slotProps'> {{ slotProps.user.firstName }}
+				<template v-slot:other='otherSlotProps'>
+					Other Slot Props: {{ otherSlotProps.user.firstName }}
+				</template>
+			</current-user>
+			<p>Abbreviated syntax for lone default slots</p>
+			<current-user :user='userObj' v-slot:default='slotProps'> {{ slotProps.user.firstName }} </current-user>
+			<p>Scoped slots</p>
+			<current-user :user='userObj'>
+				<template v-slot:default='slotProps'>
+					{{ slotProps.user.firstName }}
+				</template>
+			</current-user>
+			<p>Named slots</p>
+			<named-slots>
+				I am the default content
+				<template v-slot:footer>I am the footer</template>
+				<template v-slot:main>I am the main content</template>
+				<template v-slot:header>I am the header</template>
+				<template v-slot:default>I override the default content</template>
+				and I am the remaining default content
+			</named-slots>
+			<p>Fallback slot content</p>
+			<submit-button>Some other text</submit-button>
+			<submit-button></submit-button>
+			<navigation-link1 url='elgoog.com'>Slot does not have access to component scope {{ url }}. Everything in the parent template is compiled in the parent; everything in the child template is compiled in the child scope.</navigation-link1>
+			<navigation-link1 url='elgoog.com'><another-component></another-component> Google</navigation-link1>
+			<navigation-link1 url='elgoog.com'><span>Hello</span> Google</navigation-link1>
+			<navigation-link1 url='elgoog.com'>Google</navigation-link1>
+		</div>
+		<script>
+			Vue.component('todo-list-slotted', {
+				props: {
+					todos: Array,
+				},
+				template: `
+				<ul>
+				<li
+					v-for='todo in todos'
+					:key='todo.id'
+				>
+				<slot name='todo' v-bind:todo='todo'>
+					{{ todo.text }}
+				</slot>
+				</li>
+				</ul>
+				`,
+			});
+			Vue.component('todo-list-simple', {
+				props: {
+					todos: Array,
+				},
+				template: `
+				<ul>
+				<li
+					v-for='todo in todos'
+					:key='todo.id'
+				>
+					{{ todo.text }}
+				</li>
+				</ul>
+				`,
+			});
+			Vue.component('base-layout', {
+				template: `
+				<div>
+				<slot name='default'>I am the default slot</slot>
+				<slot name='other'>I am another slot</slot>
+				<button @click='$emit("change-slot-name")'>Change slot name</button>
+				</div>
+				`,
+			});
+			Vue.component('current-user2', {
+				props: {
+					user: Object,
+				},
+				template: `
+				<span>
+				<slot :user='user'>{{ user.lastName }}(Default slot default content)</slot>
+				</span>
+				`,
+			});
+			Vue.component('current-user', {
+				props: {
+					user: Object,
+				},
+				template: `
+				<span>
+				<slot :user='user'>{{ user.lastName }}(Default slot default content)</slot>
+				<slot name='other' :user='user'>{{ user.lastName }}(Other slot default content)</slot>
+				</span>
+				`,
+			});
+			Vue.component('named-slots', {
+				template: `
+				<div>
+				<slot name='default'></slot>
+				<h3><slot name='header'></slot></h3>
+				<p><slot name='main'></slot></p>
+				<p><i><slot name='footer'></slot></i></p>
+				</div>
+				`,
+			});
+			Vue.component('submit-button', {
+				template: `
+				<button type='submit'>
+					<slot>Submit</slot>
+				</button>
+				`,
+			});
+			Vue.component('another-component', {
+				template: '<span>Another component</span>',
+			});
+			Vue.component('navigation-link1', {
+				props: {
+					url: String,
+				},
+				template: `
+				<div>
+					<a :href='url' class='nav-link'>
+						<slot></slot>
+					</a>
+				</div>
+				`,
+			});
+			var app = new Vue({
+				el: '#app',
+				data: {
+					userObj : {firstName: 'Evan', lastName: 'You'},
+					dynamicslotname: 'default',
+					todos: [
+						{
+							text: 'First Todo',
+							isComplete: true,
+						},
+						{
+							text: 'Second Todo',
+							isComplete: false,
+						},
+						{
+							text: 'Third Todo',
+							isComplete: false,
+						},
+					],
+				},
+				methods: {
+					changeSlotName: function(){
+						if(this.dynamicslotname == 'default'){
+							this.dynamicslotname = 'other';
+						}
+						else if(this.dynamicslotname == 'other'){
+							this.dynamicslotname = 'default';
+						}
+					},
+				},
+			});
+		</script>
+	</body>
+</html>

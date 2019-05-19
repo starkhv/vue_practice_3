@@ -1,0 +1,51 @@
+<html>
+	<head>
+		<script src='vue.js'></script>
+	</head>
+	<body>
+		<div id='app'>
+		<p><i>Note: Skipped Async Components</i></p>
+		<p>Keep alive</p>
+		<keep-alive>
+		<component v-bind:is='currentTabComponent' ></component>
+		</keep-alive>
+		<button @click='toggleComponent'>Switch Component</button>
+		</div>
+		<script>
+			Vue.component('select-editor', {
+				template: `
+				<div>
+				<p>Select an editor</p>
+				<select>
+					<option value='vim'>Vim</option>
+					<option value='atom'>Atom</option>
+					<option value='vscode'>VS Code</option>
+					<option value='emacs'>Emacs</option>
+				</select>
+				</div>
+				`,
+			});
+			Vue.component('custom-input', {
+				template: `
+				<input />
+				`,
+			});
+			var app = new Vue({
+				el: '#app',
+				data: {
+					currentTabComponent: 'select-editor',
+				},
+				methods: {
+					toggleComponent: function() {
+						if(this.currentTabComponent == 'select-editor'){
+							this.currentTabComponent = 'custom-input';
+						}
+						else if(this.currentTabComponent == 'custom-input'){
+							this.currentTabComponent = 'select-editor';
+						}
+					},
+				},
+			});
+		</script>
+	</body>
+</html>

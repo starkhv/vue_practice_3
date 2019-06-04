@@ -1,0 +1,226 @@
+<html>
+	<head>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.1/lodash.min.js"></script>
+		<script src='vue.js'></script>
+		<link rel="stylesheet" href="animate.css">
+		<style>
+		.list-item {
+			display: inline-block;
+			margin-right: 10px;
+		}
+		.list-enter-active, .list-leave-active{
+			transition-property: opacity, transform;
+			transition-duration: 1000ms;
+		}
+		.list-enter, .list-leave-to {
+			opacity: 0;
+			transform: translateY(30px);
+		}
+		.list-move {
+			transition: transform 1s;
+		}
+		.fixed-div{
+			width: 200px;
+			height: 200px;
+		}
+		.slide-fade-enter, .slide-fade-leave-to, .v-enter, .v-leave-to{
+			opacity: 0;
+			transform: translateX(300px);
+		}
+		.v-enter-active, .v-leave-active,  .slide-fade-enter-active, .slide-fade-leave-active{
+			transition-property: opacity, transform;
+			transition-duration: 300ms;
+			transition-timing-function: ease;
+		}
+		.bounce-enter-active {
+			animation: bounce-in 500ms;
+		}
+		.bounce-leave-active {
+			animation: bounce-in 500ms reverse;
+		}
+		@keyframes bounce-in {
+			0% {
+				transform: scale(0);
+			}
+			50% {
+				transform: scale(1.5);
+			}
+			100% {
+				transform: scale(1);
+			}
+		}
+		.component-fade-enter-active, .component-fade-leave-active{
+			transition: opacity .3s ease;
+		}
+		.component-fade-enter, .component-fade-leave-to{
+			opacity: 0;
+		}
+		.flip-list-move {
+			transition: transform 1000ms;
+		}
+		</style>
+	</head>
+	<body>
+		<div id='app'>
+			<p><i>Skipped staggering list transitions, reusable transitions and dynamic transitions</i></p>
+			<p>List Move Transitions</p>
+			<div id='flip-list-demo' class='demo'>
+				<button @click='shuffle'>Shuffle</button>
+				<transition-group name='flip-list' tag='ul'>
+					<li v-for='number in numbers' v-bind:key='number'>{{ number }}</li>
+				</transition-group>
+			</div>
+			<p>List Transitions</p>
+			<button @click='add'>Add</button>
+			<button @click='remove'>Remove</button>
+			<transition-group name='list' tag='p'>
+				<span v-for='number in numbers' :key='number' class='list-item'>{{ number }}</span>
+			</transition-group>
+			<p>Transitioning between components</p>
+				<input type='radio' name='a' value='v-a' v-model='view' />
+				<label for='a'>Component A</label>
+				<input type='radio' name='b' value='v-b' v-model='view' />
+				<label for='b'>Component B</label>
+			</select>
+			<transition name='component-fade' mode='out-in'>
+				<component :is='view'></component>
+			</transition>
+			<p>Transitioning between elements</p>
+			<transition mode='out-in'>
+				<button :key='docState'>
+					{{ buttonMessage }}
+				</button>
+			</transition>
+			<br/>
+			<br/>
+			<transition>
+				<button v-if='docState === "saved"' key='saved'>Edit</button>
+				<button v-if='docState === "edited"' key='edited'>Save</button>
+				<button v-if='docState === "editing"' key='editing'>Cancel</button>
+			</transition>
+			<br/>
+			<br/>
+			<transition>
+				<button :key='isEditing'>
+					{{ isEditing ? 'Save' : 'Edit'}}
+				</button>
+			</transition>
+			<br/>
+			<br/>
+			<transition>
+				<button v-if='isEditing' key='save'>Save</button>
+				<button v-else key='edit'>Edit</button>
+			</transition>
+			<transition>
+				<table v-if='items.length > 0'>
+					<tr v-for='item in items'><td>{{ item }}</td></tr>
+				</table>
+				<p v-else>Sorry, no items found.</p>
+			</transition>
+			<p>Transitions on Initial Render</p>
+			<transition appear>
+				<p>Some text</p>
+			</transition>
+			<p>Javascript Hooks</p>
+			<button @click='showJavascriptHooks = !showJavascriptHooks'>Toggle show</button>
+			<transition
+			v-on:before-enter='beforeEnter'
+			v-on:enter='enter'
+			v-on:after-enter='afterEnter'
+			v-bind:css = 'false'
+			>
+			<p v-if='showJavascriptHooks'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eos, alias?</p>
+			</transition>
+			<p><i>Skipped explicit transition durations</i></p>
+			<p>Custom transition classes</p>
+			<button @click='showCustomTransitionClass=!showCustomTransitionClass'>Toggle render</button>
+			<transition
+				name='custom-classes-transition'
+				enter-active-class='animated tada'
+				leave-active-class='animated bounceOutRight'
+			>
+			<p v-if='showCustomTransitionClass'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae nesciunt nulla cum, ullam corporis ipsa tempora voluptas impedit doloremque. Laborum.</p>
+			</transition>
+			<p>CSS Animations</p>
+			<button @click='showCSSAnimation = !showCSSAnimation'>Toggle show</button>
+			<transition name='bounce'>
+				<p v-if='showCSSAnimation'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aspernatur, quaerat.</p>
+			</transition>
+			<p>CSS Transitions</p>
+			<button v-on:click='show = !show'>
+				Toggle show to transition
+			</button>
+			<div class='fixed-div'>
+			<transition name='slide-fade'>
+				<p v-show='show'>hello</p>
+			</transition>
+			</div>
+			<div class='fixed-div'>
+			<transition>
+				<p v-if='!show'>hello</p>
+			</transition>
+			</div>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					show: true,
+					showCustomTransitionClass: true,
+					showCSSAnimation: true,
+					showJavascriptHooks: true,
+					items: [
+						'first item',
+						'second item',
+						'third item'
+					],
+					isEditing: true,
+					docState: 'saved',
+					view: 'v-a',
+					numbers: [1,2,3,4,5,6,7,8,9],
+					nextNum: 10
+				},
+				methods: {
+					shuffle: function () {
+						this.numbers = _.shuffle(this.numbers);
+					},
+					randomIndex: function(){
+						return Math.floor(Math.random() * this.numbers.length)
+					},
+					add: function() {
+						this.numbers.splice(this.randomIndex(), 0, this.nextNum++);
+					},
+					remove: function() {
+						this.numbers.splice(this.randomIndex(), 1)
+					},
+					beforeEnter: function(el){
+						console.log('Before Enter');
+					},
+					enter: function(el){
+						console.log('Enter');
+					},
+					afterEnter: function(el){
+						console.log('After Enter');
+					}
+				},
+				computed: {
+					buttonMessage: function(){
+						switch(this.docState){
+							case 'saved': return 'Edit';
+							case 'edited': return 'Save';
+							case 'editing': return 'Cancel';
+						}
+					}
+				},
+				components: {
+					'v-a': {
+						template: '<div>Component A</div>',
+					},
+					'v-b': {
+						template: '<div>Component B</div>',
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

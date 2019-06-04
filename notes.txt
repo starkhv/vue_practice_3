@@ -1,1 +1,2 @@
 No practice for Handling Edge Cases chapter
+No practice for State Transitions

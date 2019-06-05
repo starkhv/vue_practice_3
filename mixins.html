@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mixins</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+   <p><i>Skipped Custom Option Merge Strategies</i></p>
+   <script>
+       Vue.mixin({
+           created: function () {
+               var myOption = this.$options.myOption;
+               if (myOption) {
+                   console.log(myOption);
+               }
+           }
+       })
+       new Vue({
+           myOption: 'hello!'
+       })       
+       var mixin = {
+            data: function() {
+                return {
+                    message: 'hello',
+                    foo: 'abc'
+                }
+            },
+            created: function () {
+                console.log('mixin hook called');
+            },
+            methods: {
+                fooMethod: function () {
+                    console.log('foo');
+                },
+                conflicting: function () {
+                    console.log('from mixin');
+                }
+            }
+       }
+       var app = new Vue({
+            mixins: [mixin],
+            data: function () {
+                return {
+                    message: 'goodbye',
+                    bar: 'def'
+                }
+            },
+            created: function() {
+                // console.log(this.$data);
+                console.log('component hook called');
+            },
+            methods: {
+                barMethod: function () {
+                    console.log('bar');
+                },
+                conflicting: function () {
+                    console.log('from self');
+                }
+            }
+       });
+       var myMixin = {
+            created: function () {
+                this.hello();
+            },
+            methods: {
+                hello: function() {
+                    console.log('hello from mixin!')
+                } 
+            }
+       };
+
+       var Component = Vue.extend({
+           mixins: [myMixin]
+       });
+
+       var component = new Component()
+   </script> 
+</body>
+</html>

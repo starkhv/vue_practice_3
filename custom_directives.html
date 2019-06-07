@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Custom Directives</title>
+    <script src='vue.js'></script>
+</head>
+<body>
+    <div id='app'>
+        <p>Object Literals</p>
+        <div v-demo2='{ color: "white", text: "hello!" }'></div>
+        <p><i>Skipped function shorthand practice</i></p>
+        <p><i>Skipped dynamic directive arguments practice because of unclear example</i></p>
+        <p>Directive hook arguments</p>
+        <div v-demo:foo.a.b='message'></div>
+        <input v-focus2 />
+    </div>
+    <script>
+        Vue.directive('demo2', function (el, binding){
+            console.log(binding.value.color);
+            console.log(binding.value.text);
+        })
+        Vue.directive('focus', {
+            inserted: function (el) {
+                el.focus();
+            }
+        })
+        Vue.directive('demo', {
+            bind: function (el, binding, vnode){
+                var s = JSON.stringify
+                el.innerHTML = `
+                    name: ${s(binding.name)} <br/>
+                    value: ${s(binding.value)} <br/>
+                    expression: ${s(binding.expression)} <br/>
+                    argument: ${s(binding.arg)} <br/>
+                    modifiers: ${s(binding.modifiers)} <br/>
+                    vnode keys: ${Object.keys(vnode).join(', ')} <br/>
+
+                `
+            }
+        })
+        var app = new Vue({
+            el: '#app',
+            directives: {
+                focus2: {
+                    inserted: function (el) {
+                        el.focus();
+                    }
+                }
+            },
+            data: {
+                message: 'Hello!',
+            }
+        })
+    </script>
+</body>
+</html>

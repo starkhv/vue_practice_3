@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Filters</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id='app'>
+        <p>
+        <label>Arg1 </label>
+        <input v-model='arg1' />
+        </p>
+        <p>
+        <label>Arg2 </label>
+        <input v-model='arg2' />
+        </p>
+        <p>Arg1 : {{ arg1 }}</p>
+        <p>Arg2 : {{ arg2 }}</p>
+        <p>Result: {{ message | filterA('hello', 'world') }}</p>
+        <p>
+        <label for='message'>Message </label>
+        <input v-model='message' name='message' />
+        </p>
+        <p>
+        <label for='rawId'>Raw ID</label>
+        <input v-model='rawId' name='rawId' />
+        </p>
+        {{ message | capitalize }}
+        <br/>
+        {{ rawId | formatId}}
+        <p>Chained filters</p>
+        {{ message | capitalize | formatId}}
+    </div>
+
+   <script>
+       Vue.filter('filterA', function(value, arg1, arg2){
+            result = value + ' ' + arg1 + ' ' + arg2;
+            return result;
+       })
+       Vue.filter('formatId', function(value) {
+           prefix = 'ID: SDKA'
+           if(!value) return prefix+'000000'
+           return prefix + value;
+       })
+       //global filter that will be overridden by local filter
+       Vue.filter('capitalize', function(value){
+            return value;
+       })
+       var app = new Vue({
+           el: '#app',
+           data: {
+               rawId: '129329990',
+               message : 'i am a message',
+           },
+           filters: {
+               capitalize: function (value) {
+                 if (!value) return ''
+                 value = value.toString()
+                 return value.charAt(0).toUpperCase() + value.slice(1)
+               }
+           },
+       })
+   </script> 
+</body>
+</html>

@@ -1,2 +1,4 @@
 No practice for Handling Edge Cases chapter
 No practice for State Transitions
+Skipped Render Functions and JSX
+Skipped writing a plugin section of Plugins, no practice
